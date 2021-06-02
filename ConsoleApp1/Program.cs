@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using RAWGAPI;
 
 namespace ConsoleApp1
 {
     class Program
     {
-        private const string aPIKey = "?key=1d28751350144a4e835b8e6a355f9113";
-        private const string uRL = "https://api.rawg.io/api/";
         static void Main(string[] args)
         {
-            var client = new WebClient();
-            //string response = client.DownloadString($"{uRL}games{aPIKey}");
-            //System.IO.File.WriteAllText("games.txt", response);
-            string response = System.IO.File.ReadAllText("games.txt");
+            Class1 API = new RAWGAPI.Class1();
+            APIResponse apiResponse = API.GetAPIResponse();
+            Console.WriteLine(API.APICall());
         }
     }
 }
