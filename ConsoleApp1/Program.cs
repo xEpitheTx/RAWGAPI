@@ -9,8 +9,8 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            APIGames API = new APIGames();
-            APIResponse apiResponse = API.GetAPIResponse();
+            APIGames API = new APIGames("1d28751350144a4e835b8e6a355f9113");
+            APIResponse<APIGameResult> apiResponse = API.GetAPIResponse();
             Console.WriteLine(API.APICall());
         }
     }

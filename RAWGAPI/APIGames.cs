@@ -1,41 +1,63 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Parameter = System.Tuple<string, string>;
 
 namespace RAWGAPI
 {
-    public class APIGames
+    public abstract class BaseAPI
     {
-        private const string aPIKey = "?key=1d28751350144a4e835b8e6a355f9113";
+        protected abstract string RequestPage { get; }
+
+        private string APIKey;
+        public BaseAPI(string apiKey)
+        {
+            APIKey = apiKey;
+        }
+
         private const string uRL = "https://api.rawg.io/api/";
         private WebClient client = new WebClient();
 
-        public string APICall()
+        public string APICall(params Parameter[] additionalParameters)
         {
-            //string response = client.DownloadString($"{uRL}games{aPIKey}");
+            string requestURL = $"{uRL}{RequestPage}";
+
+            List<Parameter> parameters = new List<Parameter>()
+            {
+                new Parameter("key", APIKey)
+            };
+            parameters.AddRange(additionalParameters);
+            requestURL += $"?{string.Join("&", parameters.Select(a => $"{a.Item1}={a.Item2}"))}";
+
+            //string response = client.DownloadString(requestURL);
             //System.IO.File.WriteAllText("games.txt", response);
             return System.IO.File.ReadAllText("games.txt");
         }
+    }
 
-        public APIResponse GetAPIResponse()
+    public class APIGames : BaseAPI
+    {
+        public APIGames(string apiKey) : base(apiKey) { }
+
+        protected override string RequestPage => "games";
+
+        //Work this into base, APIGameResult should be a parameter
+        public APIResponse<APIGameResult> GetAPIResponse(params Parameter[] parameters)
         {
-            return JsonConvert.DeserializeObject<APIResponse>(APICall());
+            return JsonConvert.DeserializeObject<APIResponse<APIGameResult>>(APICall(parameters));
         }
     }
 
-    public class APIResponse
+    public class APIResponse<T>
     {
         public long Count { get; set; }
         public string Next { get; set; }
         public string Previous { get; set; }
         [JsonProperty("Results")]
-        public List<APIGameResult> GameResults { get; set; }
+        public List<T> GameResults { get; set; }
     }
 
     [DebuggerDisplay("{Name}")]
@@ -55,7 +77,7 @@ namespace RAWGAPI
         public int Reviews_Text_Count { get; set; }
         public long Added { get; set; }
         public APIGameAddedByStatus Added_By_Status { get; set; }
-        public int Metacritic { get; set; }
+        public int? Metacritic { get; set; }
         public int PlayTime { get; set; }
         public int Suggestions_Count { get; set; }
         public string Updated { get; set; }

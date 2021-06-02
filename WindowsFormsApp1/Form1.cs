@@ -15,9 +15,7 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-
-        private static APIGames API = new APIGames();
-        private APIResponse apiResponse = API.GetAPIResponse();
+        private APIResponse<APIGameResult> apiResponse = new APIGames("1d28751350144a4e835b8e6a355f9113").GetAPIResponse(new Tuple<string, string>("page", "3"));
 
         public Form1()
         {
@@ -37,6 +35,7 @@ namespace WindowsFormsApp1
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateBackgroundImage();
+            PopulateRatingsTextBox();
         }
 
         private void UpdateBackgroundImage()
@@ -49,6 +48,20 @@ namespace WindowsFormsApp1
 
             pictureBox1.ImageLocation = CleanString($"{apiResponse.GameResults[comboBox1.SelectedIndex].Name}BackgroundImage.png");
             pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+        }
+
+        private void PopulateRatingsTextBox()
+        {
+            ratings.Clear();
+            foreach (APIGameResult game in apiResponse.GameResults)
+            {
+                List<APIGameRating> gameRatings = game.GameRatings;
+                foreach (APIGameRating gameRating in gameRatings)
+                {
+                    ratings.Text += $"Critics are saying: {gameRating.Title} with an score of {gameRating.Percent}{Environment.NewLine}";
+                }
+                ratings.Text += Environment.NewLine;
+            }
         }
 
         private string CleanString(string input)
