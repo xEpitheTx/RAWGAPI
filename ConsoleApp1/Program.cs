@@ -9,7 +9,7 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            Class1 API = new RAWGAPI.Class1();
+            APIGames API = new APIGames();
             APIResponse apiResponse = API.GetAPIResponse();
             Console.WriteLine(API.APICall());
         }

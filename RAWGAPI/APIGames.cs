@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -9,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace RAWGAPI
 {
-    public class Class1
+    public class APIGames
     {
         private const string aPIKey = "?key=1d28751350144a4e835b8e6a355f9113";
         private const string uRL = "https://api.rawg.io/api/";
